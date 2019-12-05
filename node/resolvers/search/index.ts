@@ -1,5 +1,4 @@
 import { IOContext, NotFoundError, UserInputError } from '@vtex/api'
-import { all } from 'bluebird'
 import { head, isEmpty, isNil, path, pluck, test, pathOr, zip, tail } from 'ramda'
 
 import { resolvers as assemblyOptionResolvers } from './assemblyOption'
@@ -20,6 +19,7 @@ import { resolvers as breadcrumbResolvers } from './searchBreadcrumb'
 import { resolvers as skuResolvers } from './sku'
 import { resolvers as productPriceRangeResolvers } from './productPriceRange'
 import { SearchCrossSellingTypes } from './utils'
+import * as searchStats from '../../utils/searchStats'
 
 interface ProductIndentifier {
   field: 'id' | 'slug' | 'ean' | 'reference' | 'sku'
@@ -342,12 +342,17 @@ export const queries = {
       query,
     }
 
-    const [productsRaw, searchMetaData] = await all([
+    const [productsRaw, searchMetaData] = await Promise.all([
       search.products(args, true),
       isQueryingMetadata(info)
         ? getSearchMetaData(_, translatedArgs, ctx)
         : emptyTitleTag,
     ])
+
+    if (productsRaw.status === 200) {
+      searchStats.count(ctx, args)
+    }
+    
     return {
       translatedArgs,
       searchMetaData,
