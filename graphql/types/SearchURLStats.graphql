@@ -1,0 +1,4 @@
+type SearchURLStats{
+  count: Int
+  path: String
+}

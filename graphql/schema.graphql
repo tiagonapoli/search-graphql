@@ -1,3 +1,8 @@
+enum SORT{
+  ASC
+  DESC
+}
+
 type Query {
   """
   Returns a specified product
@@ -165,4 +170,6 @@ type Query {
     """
     searchTerm: String
   ): Suggestions @cacheControl(scope: SEGMENT, maxAge: MEDIUM) @withSegment
+
+  searchUrlsCount( limit: Int = 100, sort: SORT ): [SearchURLStats]
 }
