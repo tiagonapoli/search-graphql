@@ -1,4 +1,4 @@
-enum SORT{
+enum SORT {
   ASC
   DESC
 }
@@ -171,5 +171,17 @@ type Query {
     searchTerm: String
   ): Suggestions @cacheControl(scope: SEGMENT, maxAge: MEDIUM) @withSegment
 
-  searchUrlsCount( limit: Int = 100, sort: SORT ): [SearchURLStats]
+  """
+  Get search urls access stats count
+  """
+  searchURLsCount( 
+    """
+    Number of items that is returned
+    """
+    limit: Int = 100,
+
+    """
+    Sorting strategy, asc: ascending, desc: descending
+    """
+    sort: SORT ): [SearchURLStats] @cacheControl(scope: PUBLIC, maxAge: SHORT)
 }

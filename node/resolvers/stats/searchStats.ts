@@ -31,7 +31,7 @@ export const count = async (ctx: Context, args: SearchArgs) => {
     
     data.searchUrlCount[searchURLPath] = (data.searchUrlCount[searchURLPath] || 0) + 1
     data.updatedCount = data.updatedCount + 1
-    if(data.updatedCount === INDEXING_UPDATE_FREQUENCY){
+    if (data.updatedCount === INDEXING_UPDATE_FREQUENCY) {
       data.updatedCount = 0
       sendIndexSearchUrlsEvent(ctx)
     }

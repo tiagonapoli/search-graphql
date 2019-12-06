@@ -1,17 +1,25 @@
-import { VBase } from "@vtex/api";
-import { VBASE_BUCKET, URL_COUNT_FILE_PATH } from "./constants"
-import { SearchStatsUrlCount } from "./searchStats"
+import { VBase } from '@vtex/api'
+import { VBASE_BUCKET, URL_COUNT_FILE_PATH } from './constants'
+import { SearchStatsUrlCount } from './searchStats'
 
 export enum SORT {
-  ASC = "ASC",
-  DESC = "DESC"
+  ASC = 'ASC',
+  DESC = 'DESC',
 }
 
-export const searchUrlsCount = async (vbase: VBase, limit: number, sort: SORT = SORT.DESC) =>{
-  const data = await vbase.getJSON<SearchStatsUrlCount>(VBASE_BUCKET, URL_COUNT_FILE_PATH, true) as SearchStatsUrlCount
+export const searchURLsCount = async (
+  vbase: VBase,
+  limit: number,
+  sort: SORT = SORT.DESC
+) => {
+  const data = (await vbase.getJSON<SearchStatsUrlCount>(
+    VBASE_BUCKET,
+    URL_COUNT_FILE_PATH,
+    true
+  )) as SearchStatsUrlCount
   let comparator = urlsCountDESCComparator
 
-  if(sort === SORT.ASC){
+  if (sort === SORT.ASC) {
     comparator = urlsCountASCComparator
   }
 
@@ -20,17 +28,23 @@ export const searchUrlsCount = async (vbase: VBase, limit: number, sort: SORT = 
       Object.entries(data.searchUrlCount)
         .sort(comparator)
         .slice(0, limit)
-        .map((searchUrlStat) => {
+        .map(searchUrlStat => {
           return { path: searchUrlStat[0], count: searchUrlStat[1] }
         })) ||
     []
   )
 }
 
-const urlsCountASCComparator = (urlStatsA: [string, number], urlStatsB: [string, number]) => {
+const urlsCountASCComparator = (
+  urlStatsA: [string, number],
+  urlStatsB: [string, number]
+) => {
   return urlStatsA[1] - urlStatsB[1]
 }
 
-const urlsCountDESCComparator = (urlStatsA: [string, number], urlStatsB: [string, number]) => {
+const urlsCountDESCComparator = (
+  urlStatsA: [string, number],
+  urlStatsB: [string, number]
+) => {
   return urlStatsB[1] - urlStatsA[1]
 }
